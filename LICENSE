@@ -1,0 +1,4 @@
+./ccnx-0.7.1 is from CCNx Project by Palo Alto Research Center (http://www.ccnx.org), and should follow its licenses;
+./onl_ccnx_utils is from Open Network Laboratory at Washington University in St. Louis (http://wiki.arl.wustl.edu/onl/index.php/CCNx:_traffic_generation), and should follow its licenses;
+./devstack is from Advanced Network Architecture Laboratory at University of Toronto (https://github.com/savi-dev/devstack), and should follow its licenses;
+

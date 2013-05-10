@@ -1,0 +1,14 @@
+set number
+set tabstop=4
+set shiftwidth=4
+set noexpandtab
+set autoindent
+set smartindent
+"set cindent
+set ruler
+set wrap
+set linebreak
+set autoread
+syntax on
+filetype on
+
