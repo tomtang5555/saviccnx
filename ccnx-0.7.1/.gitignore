@@ -3,7 +3,7 @@
 *.out
 
 .cproject
-csrc/dir.mk
+csrc/conf.mk
 
 bin/
 lib/
