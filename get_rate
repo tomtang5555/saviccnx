@@ -1,0 +1,30 @@
+#!/bin/bash
+
+IF=eth0
+WAIT_TIME=10
+
+begin_time=`date +%s`
+begin_tx_byte=`cat /sys/class/net/$IF/statistics/tx_bytes`
+begin_rx_byte=`cat /sys/class/net/$IF/statistics/rx_bytes`
+begin_tx_packets=`cat /sys/class/net/$IF/statistics/tx_packets`
+begin_rx_packets=`cat /sys/class/net/$IF/statistics/rx_packets`
+
+sleep $WAIT_TIME
+
+end_time=`date +%s`
+end_tx_byte=`cat /sys/class/net/$IF/statistics/tx_bytes`
+end_rx_byte=`cat /sys/class/net/$IF/statistics/rx_bytes`
+end_tx_packets=`cat /sys/class/net/$IF/statistics/tx_packets`
+end_rx_packets=`cat /sys/class/net/$IF/statistics/rx_packets`
+
+time_int=$(($end_time-$begin_time))
+tx_byte=$((($end_tx_byte-$begin_tx_byte)/$time_int))
+rx_byte=$((($end_rx_byte-$begin_rx_byte)/$time_int))
+tx_packets=$((($end_tx_packets-$begin_tx_packets)/$time_int))
+rx_packets=$((($end_rx_packets-$begin_rx_packets)/$time_int))
+echo "${time_int}s ${IF}"
+echo ${tx_byte} Bps tx
+echo ${rx_byte} Bps rx
+echo ${tx_packets} pps tx
+echo ${rx_packets} pps rx
+

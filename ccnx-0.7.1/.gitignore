@@ -5,6 +5,9 @@
 .*.swp
 !csrc/ccnd/fortunes.ccnb
 !csrc/ccnd/minsuffix.ccnb
+doc/*.html
+doc/technical/*.html
+doc/technical/index.txt
 
 .cproject
 csrc/conf.mk
