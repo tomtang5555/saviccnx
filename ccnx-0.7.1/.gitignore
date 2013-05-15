@@ -10,6 +10,7 @@ doc/technical/*.html
 doc/technical/index.txt
 
 .cproject
+.project
 csrc/conf.mk
 
 bin/
