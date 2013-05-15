@@ -11,6 +11,7 @@ doc/technical/index.txt
 
 .cproject
 .project
+.settings/
 csrc/conf.mk
 
 bin/
