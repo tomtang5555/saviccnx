@@ -18,6 +18,8 @@
  * Fifth Floor, Boston, MA 02110-1301 USA.
  */
 #include <ccn/coding.h>
+//TANG
+#include <stdio.h>
 
 /**
  * This macro documents what's happening in the state machine by
@@ -57,6 +59,17 @@ ssize_t
 ccn_skeleton_decode(struct ccn_skeleton_decoder *d,
                     const unsigned char *p, size_t n)
 {
+    // TANG
+    int j;
+    printf("%p,%zu,%d,%d,%zu,%zu,%zu,%zu,%p,",
+            d, d->index, d->state, d->nest, d->numval, d->token_index, d->element_index, n, p);
+    for (j = 0; j < n; j++)
+        printf("%02x ", p[j]);
+    //printf(",");
+    //for (j = 0; j < n; j++)
+    //    printf("%c", p[j]);
+    printf(",|,");
+
     enum ccn_decoder_state state = d->state;
     int tagstate = 0;
     size_t numval = d->numval;
@@ -252,5 +265,9 @@ ccn_skeleton_decode(struct ccn_skeleton_decoder *d,
     d->state = state | pause | (tagstate << 8); 
     d->numval = numval;
     d->index += i;
+
+    // TANG
+    printf("%p,%zu,%d,%d,%zu,%zu,%zu,%zu,\n",
+            d, d->index, d->state, d->nest, d->numval, d->token_index, d->element_index, i);
     return(i);
 }
