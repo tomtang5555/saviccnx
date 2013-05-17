@@ -64,7 +64,7 @@ ccn_skeleton_decode(struct ccn_skeleton_decoder *d,
     printf("%p,%zu,%d,%d,%zu,%zu,%zu,%zu,%p,",
             d, d->index, d->state, d->nest, d->numval, d->token_index, d->element_index, n, p);
     for (j = 0; j < n; j++)
-        printf("%02x ", p[j]);
+        printf("%02x", p[j]);
     //printf(",");
     //for (j = 0; j < n; j++)
     //    printf("%c", p[j]);
