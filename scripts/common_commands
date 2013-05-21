@@ -1,0 +1,37 @@
+0. Given *.csv (direct dump), first separate by input d->state
+grep ...
+
+0. Get statistics of input d->state
+cat bb.csv | cut -d , -f 3 | sort | uniq -c > *_in_status_stats.out
+
+*** Given *_in_status_*.out ***
+
+1. Get possible output i:
+cat *_in_status_*.out | cut -d , -f 19 | sort | uniq -c
+
+2. Separate into out_i_?.out:
+grep -e ',?,$' *_in_status_*.out > out_i_?.out
+
+3. Verify that first byte of d does not overlap for i=1/2
+cat out_i_1.out | cut -d , -f 10 | cut -c 1-2 | sort | uniq -c
+cat out_i_2.out | cut -d , -f 10 | cut -c 1-2 | sort | uniq -c
+
+
+*** For output i=1 ***
+
+1. Find the possible first bytes in out_i_1.out
+
+
+2. To get i1_??.out
+cat out_i_1.out | grep -e '^0x.\+,0x.\+,??.\+,|,' > i1_??.out
+
+3. Verify length of i1_??.out
+wc -l i1_??.out
+
+4. Find pattern by
+head i1_??.out
+
+5. Verfiy patterns found:
+cat i1_8e.out | awk -F, '{if ($13 == $2+1) count++;} END {printf count "\n"}' count=0
+
+6. Modify ccn_coding.c accordingly.

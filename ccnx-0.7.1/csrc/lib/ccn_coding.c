@@ -29,6 +29,11 @@
 #define XML(goop) ((void)0)
 
 /**
+ * This macro defines whether or not use optimization code written by TT.
+ */
+#define OPTI_TT
+
+/**
  * Decodes ccnb decoded data
  *
  * @param d holds the current state of the decoder.
@@ -60,15 +65,141 @@ ccn_skeleton_decode(struct ccn_skeleton_decoder *d,
                     const unsigned char *p, size_t n)
 {
     // TANG
-    int j;
-    printf("%p,%zu,%d,%d,%zu,%zu,%zu,%zu,%p,",
-            d, d->index, d->state, d->nest, d->numval, d->token_index, d->element_index, n, p);
-    for (j = 0; j < n; j++)
-        printf("%02x", p[j]);
-    //printf(",");
+    //int j;
+    //printf("%p,%zu,%d,%d,%zu,%zu,%zu,%zu,%p,",
+    //        d, d->index, d->state, d->nest, d->numval, d->token_index, d->element_index, n, p);
     //for (j = 0; j < n; j++)
-    //    printf("%c", p[j]);
-    printf(",|,");
+    //    printf("%02x", p[j]);
+    //printf(",|,");
+#ifdef OPTI_TT
+    if (n == 0)
+        return 0;
+    switch (d->state) {
+//    case 0: //1,585
+//        break;
+    case 32768: //70,678
+        switch (p[0]) {
+        case 0xf2:
+            d->index += 1;
+            d->state = 164097;
+            d->nest += 1;
+            d->numval = 14;
+            return (1);
+            break;
+        case 0x01:
+            if (p[1] == 0xd2){
+                d->index += 2;
+                d->state = 164097;
+                d->nest += 1;
+                d->numval = 26;
+                return (2);
+            }
+            break;
+        case 0x04:
+            if (p[1] == 0x82){
+                d->index += 2;
+                d->state = 164097;
+                d->nest += 1;
+                d->numval = 64;
+                return (2);
+            }
+            break;
+        case 0xfa:
+            d->index += 1;
+            d->state = 164097;
+            d->nest += 1;
+            d->numval = 15;
+            return (1);
+            break;
+        default:
+            break;
+        }
+        break;
+
+    case 164097: //234,787
+        switch (p[0]) {
+        case 0xfa: //1, 66817
+            d->token_index = d->index;
+            d->element_index = d->index;
+            d->index += 1;
+            //d->state = 164097;
+            d->nest += 1;
+            d->numval = 15;
+            return (1);
+            break;
+        case 0x9d: //1, 65933
+            d->token_index = d->index;
+            //d->element_index = 0 //d->index;
+            d->index += 1;
+            d->state = 360454;
+            //d->nest += 0;
+            d->numval = 3;
+            return (1);
+            break;
+        case 0x95: //1, 59688
+            d->token_index = d->index;
+            //d->element_index = 0 //d->index;
+            d->index += 1;
+            d->state = 360454;
+            //d->nest += 0;
+            d->numval = 2;
+            return (1);
+            break;
+        case 0x8d: //1, 20362
+            d->token_index = d->index;
+            //d->element_index = 0 //d->index;
+            d->index += 1;
+            d->state = 360454;
+            //d->nest += 0;
+            d->numval = 1;
+            return (1);
+            break;
+        case 0xf2: //1, 2367
+            d->token_index = d->index;
+            d->element_index = d->index;
+            d->index += 1;
+            //d->state = 164097;
+            d->nest += 1;
+            d->numval = 14;
+            return (1);
+            break;
+        case 0x8e: //1, 2352
+            d->token_index = d->index;
+            //d->element_index = d->index;
+            d->index += 1;
+            d->state = 425987;
+            //d->nest += 1;
+            d->numval = 1;
+            return (1);
+            break;
+        case 0xb5: //1, 1507
+            d->token_index = d->index;
+            //d->element_index = d->index;
+            d->index += 1;
+            d->state = 360454;
+            //d->nest += ;
+            d->numval = 6;
+            return (1);
+            break;
+        //case 0xa5: //1, 899
+        //    break;
+        default:
+            break;
+        }
+        break;
+
+    case 360454: //157,193
+        break;
+    case 491521: //107,110
+        break;
+    case 491520: //3,921
+        break;
+    case 425987: //2,363
+        break;
+    default:
+        break;
+    }
+#endif
 
     enum ccn_decoder_state state = d->state;
     int tagstate = 0;
@@ -267,7 +398,8 @@ ccn_skeleton_decode(struct ccn_skeleton_decoder *d,
     d->index += i;
 
     // TANG
-    printf("%p,%zu,%d,%d,%zu,%zu,%zu,%zu,\n",
-            d, d->index, d->state, d->nest, d->numval, d->token_index, d->element_index, i);
+    //printf("%p,%zu,%d,%d,%zu,%zu,%zu,%zu,\n",
+    //        d, d->index, d->state, d->nest, d->numval, d->token_index, d->element_index, i);
+
     return(i);
 }

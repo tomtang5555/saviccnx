@@ -5262,7 +5262,7 @@ void
 ccnd_run(struct ccnd_handle *h)
 {
     // TANG
-    // struct timeval tv_start, tv_end;
+    //struct timeval tv_start, tv_end;
 
     int i;
     int res;
@@ -5294,23 +5294,39 @@ ccnd_run(struct ccnd_handle *h)
             if (h->fds[i].revents != 0) {
                 res--;
                 if (h->fds[i].revents & (POLLERR | POLLNVAL | POLLHUP)) {
-                    if (h->fds[i].revents & (POLLIN))
+                    if (h->fds[i].revents & (POLLIN)){
+                        // TANG
+                        //gettimeofday(&tv_start, NULL);
+
                         process_input(h, h->fds[i].fd);
+
+                        // TANG
+                        //gettimeofday(&tv_end, NULL);
+                        //printf("INPUT_1 %ld\n",
+                        //        (tv_end.tv_usec > tv_start.tv_usec) ?
+                        //        (tv_end.tv_usec - tv_start.tv_usec) :
+                        //        (1000000 - tv_start.tv_usec + tv_end.tv_usec));
+                    }
                     else
                         shutdown_client_fd(h, h->fds[i].fd);
                     continue;
                 }
-                // TANG
-                //gettimeofday(&tv_start, NULL);
 
                 if (h->fds[i].revents & (POLLOUT))
                     do_deferred_write(h, h->fds[i].fd);
-                else if (h->fds[i].revents & (POLLIN))
+                else if (h->fds[i].revents & (POLLIN)){
+                    // TANG
+                    //gettimeofday(&tv_start, NULL);
+
                     process_input(h, h->fds[i].fd);
 
-                // TANG
-                //gettimeofday(&tv_end, NULL);
-                //printf("INPUT\t%f\n", (double)(tv_end.tv_usec - tv_start.tv_usec));
+                    // TANG
+                    //gettimeofday(&tv_end, NULL);
+                    //printf("INPUT_2 %ld\n",
+                    //        (tv_end.tv_usec > tv_start.tv_usec) ?
+                    //        (tv_end.tv_usec - tv_start.tv_usec) :
+                    //        (1000000 - tv_start.tv_usec + tv_end.tv_usec));
+                }
             }
         }
     }

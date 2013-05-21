@@ -1,0 +1,5 @@
+#!/bin/bash
+FILE=$1
+echo $FILE
+awk '{ total += $2; count++ } END { print total/count }' ${FILE}
+
