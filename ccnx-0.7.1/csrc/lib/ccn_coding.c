@@ -31,7 +31,16 @@
 /**
  * This macro defines whether or not use optimization code written by TT.
  */
-#define OPTI_TT
+//#define OPTI_TT
+
+/**
+ * This macro defines whether or not use check optimization code's result
+ * against original routine's result.
+ * Requires OPTI_TT to be defined.
+ */
+#ifdef OPTI_TT
+//#define VERIFY_TT
+#endif /* OPTI_TT */
 
 /**
  * Decodes ccnb decoded data
@@ -72,134 +81,255 @@ ccn_skeleton_decode(struct ccn_skeleton_decoder *d,
     //    printf("%02x", p[j]);
     //printf(",|,");
 #ifdef OPTI_TT
-    if (n == 0)
-        return 0;
-    switch (d->state) {
-//    case 0: //1,585
-//        break;
-    case 32768: //70,678
-        switch (p[0]) {
-        case 0xf2:
-            d->index += 1;
-            d->state = 164097;
-            d->nest += 1;
-            d->numval = 14;
-            return (1);
-            break;
-        case 0x01:
-            if (p[1] == 0xd2){
-                d->index += 2;
-                d->state = 164097;
-                d->nest += 1;
-                d->numval = 26;
-                return (2);
-            }
-            break;
-        case 0x04:
-            if (p[1] == 0x82){
-                d->index += 2;
-                d->state = 164097;
-                d->nest += 1;
-                d->numval = 64;
-                return (2);
-            }
-            break;
-        case 0xfa:
-            d->index += 1;
-            d->state = 164097;
-            d->nest += 1;
-            d->numval = 15;
-            return (1);
-            break;
-        default:
-            break;
-        }
-        break;
+#ifdef VERIFY_TT
+    size_t n_origin = n;
+    unsigned char *p_origin = p;
+    ssize_t i_opt = 0;
+    int opted = 0;
+    int opt_mismatch = 0;
+    struct ccn_skeleton_decoder decoder_origin = {0};
+    struct ccn_skeleton_decoder *d_origin = &decoder_origin;
+    struct ccn_skeleton_decoder decoder_opt = {0};
+    struct ccn_skeleton_decoder *d_opt = &decoder_opt;
 
-    case 164097: //234,787
-        switch (p[0]) {
-        case 0xfa: //1, 66817
-            d->token_index = d->index;
-            d->element_index = d->index;
-            d->index += 1;
-            //d->state = 164097;
-            d->nest += 1;
-            d->numval = 15;
-            return (1);
-            break;
-        case 0x9d: //1, 65933
-            d->token_index = d->index;
-            //d->element_index = 0 //d->index;
-            d->index += 1;
-            d->state = 360454;
-            //d->nest += 0;
-            d->numval = 3;
-            return (1);
-            break;
-        case 0x95: //1, 59688
-            d->token_index = d->index;
-            //d->element_index = 0 //d->index;
-            d->index += 1;
-            d->state = 360454;
-            //d->nest += 0;
-            d->numval = 2;
-            return (1);
-            break;
-        case 0x8d: //1, 20362
-            d->token_index = d->index;
-            //d->element_index = 0 //d->index;
-            d->index += 1;
-            d->state = 360454;
-            //d->nest += 0;
-            d->numval = 1;
-            return (1);
-            break;
-        case 0xf2: //1, 2367
-            d->token_index = d->index;
-            d->element_index = d->index;
-            d->index += 1;
-            //d->state = 164097;
-            d->nest += 1;
-            d->numval = 14;
-            return (1);
-            break;
-        case 0x8e: //1, 2352
-            d->token_index = d->index;
-            //d->element_index = d->index;
-            d->index += 1;
-            d->state = 425987;
-            //d->nest += 1;
-            d->numval = 1;
-            return (1);
-            break;
-        case 0xb5: //1, 1507
-            d->token_index = d->index;
-            //d->element_index = d->index;
-            d->index += 1;
-            d->state = 360454;
-            //d->nest += ;
-            d->numval = 6;
-            return (1);
-            break;
-        //case 0xa5: //1, 899
-        //    break;
-        default:
-            break;
-        }
-        break;
+    //Copy input d to d_origin
+    d_origin->index = d->index;
+    d_origin->state = d->state;
+    d_origin->nest = d->nest;
+    d_origin->numval = d->numval;
+    d_origin->token_index = d->token_index;
+    d_origin->element_index = d->element_index;
 
-    case 360454: //157,193
-        break;
-    case 491521: //107,110
-        break;
-    case 491520: //3,921
-        break;
-    case 425987: //2,363
-        break;
-    default:
-        break;
-    }
 #endif
+
+    if (n == 0) {
+        /* original version
+        enum ccn_decoder_state state = d->state;
+        int tagstate = 0;
+        int pause = 0;
+        if (d->state >= 0) {
+            pause = d->state & CCN_DSTATE_PAUSE;
+            tagstate = (d->state >> 8) & 3;
+            state = d->state & 0xFF;
+        }
+        if (state < 0)
+            tagstate = pause = 0;
+        d->state = state | pause | (tagstate << 8);
+        */
+        /* aggressive version */
+        d->state = 32768;
+#ifdef VERIFY_TT
+        i_opt = 0;
+        opted = 1;
+#else
+        return (0);
+#endif
+    }
+    else {
+        switch (d->state) {
+//        case 0: //1,585
+//            break;
+        case 32768: //70,678
+            switch (p[0]) {
+            case 0xf2:
+                d->index += 1;
+                d->state = 164097;
+                d->nest += 1;
+                d->numval = 14;
+#ifdef VERIFY_TT
+                i_opt = 1;
+                opted = 1;
+#else
+                return (1);
+#endif
+                break;
+            case 0x01:
+                if (p[1] == 0xd2){
+                    d->index += 2;
+                    d->state = 164097;
+                    d->nest += 1;
+                    d->numval = 26;
+#ifdef VERIFY_TT
+                    i_opt = 2;
+                    opted = 1;
+#else
+                    return (2);
+#endif
+                }
+                break;
+            case 0x04:
+                if (p[1] == 0x82){
+                    d->index += 2;
+                    d->state = 164097;
+                    d->nest += 1;
+                    d->numval = 64;
+#ifdef VERIFY_TT
+                    i_opt = 2;
+                    opted = 1;
+#else
+                    return (2);
+#endif
+                }
+                break;
+            case 0xfa:
+                d->index += 1;
+                d->state = 164097;
+                d->nest += 1;
+                d->numval = 15;
+#ifdef VERIFY_TT
+                i_opt = 1;
+                opted = 1;
+#else
+                return (1);
+#endif
+                break;
+            default:
+                break;
+            }
+            break;
+
+        case 164097: //234,787
+            switch (p[0]) {
+            case 0xfa: //1, 66817
+                d->token_index = d->index;
+                d->element_index = d->index;
+                d->index += 1;
+                //d->state = 164097;
+                d->nest += 1;
+                d->numval = 15;
+#ifdef VERIFY_TT
+                i_opt = 1;
+                opted = 1;
+#else
+                return (1);
+#endif
+                break;
+            case 0x9d: //1, 65933
+                d->token_index = d->index;
+                //d->element_index = 0 //d->index;
+                d->index += 1;
+                d->state = 360454;
+                //d->nest += 0;
+                d->numval = 3;
+#ifdef VERIFY_TT
+                i_opt = 1;
+                opted = 1;
+#else
+                return (1);
+#endif
+                break;
+            case 0x95: //1, 59688
+                d->token_index = d->index;
+                //d->element_index = 0 //d->index;
+                d->index += 1;
+                d->state = 360454;
+                //d->nest += 0;
+                d->numval = 2;
+#ifdef VERIFY_TT
+                i_opt = 1;
+                opted = 1;
+#else
+                return (1);
+#endif
+                break;
+            case 0x8d: //1, 20362
+                d->token_index = d->index;
+                //d->element_index = 0 //d->index;
+                d->index += 1;
+                d->state = 360454;
+                //d->nest += 0;
+                d->numval = 1;
+#ifdef VERIFY_TT
+                i_opt = 1;
+                opted = 1;
+#else
+                return (1);
+#endif
+                break;
+            case 0xf2: //1, 2367
+                d->token_index = d->index;
+                d->element_index = d->index;
+                d->index += 1;
+                //d->state = 164097;
+                d->nest += 1;
+                d->numval = 14;
+#ifdef VERIFY_TT
+                i_opt = 1;
+                opted = 1;
+#else
+                return (1);
+#endif
+                break;
+            case 0x8e: //1, 2352
+                d->token_index = d->index;
+                //d->element_index = d->index;
+                d->index += 1;
+                d->state = 425987;
+                //d->nest += 1;
+                d->numval = 1;
+#ifdef VERIFY_TT
+                i_opt = 1;
+                opted = 1;
+#else
+                return (1);
+#endif
+                break;
+            case 0xb5: //1, 1507
+                d->token_index = d->index;
+                //d->element_index = d->index;
+                d->index += 1;
+                d->state = 360454;
+                //d->nest += ;
+                d->numval = 6;
+#ifdef VERIFY_TT
+                i_opt = 1;
+                opted = 1;
+#else
+                return (1);
+#endif
+                break;
+            //case 0xa5: //1, 899
+            //    break;
+            default:
+                break;
+            }
+            break;
+
+        //case 360454: //157,193
+            // This state marks start of ascii part
+            // Do not tablize
+        //    break;
+
+        case 491521: //107,110
+            break;
+
+        case 491520: //3,921
+            break;
+
+        case 425987: //2,363
+            break;
+
+        default:
+            break;
+        }
+    }
+#ifdef VERIFY_TT
+    // Done opt routines. Copy d to d_opt
+    d_opt->index = d->index;
+    d_opt->state = d->state;
+    d_opt->nest = d->nest;
+    d_opt->numval = d->numval;
+    d_opt->token_index = d->token_index;
+    d_opt->element_index = d->element_index;
+    // Revert d to d_origin
+    d->index = d_origin->index;
+    d->state = d_origin->state;
+    d->nest = d_origin->nest;
+    d->numval = d_origin->numval;
+    d->token_index = d_origin->token_index;
+    d->element_index = d_origin->element_index;
+#endif /* VERIFY_TT */
+#endif /* OPTI_TT */
 
     enum ccn_decoder_state state = d->state;
     int tagstate = 0;
@@ -396,6 +526,45 @@ ccn_skeleton_decode(struct ccn_skeleton_decoder *d,
     d->state = state | pause | (tagstate << 8); 
     d->numval = numval;
     d->index += i;
+
+#ifdef OPTI_TT
+#ifdef VERIFY_TT
+    opt_mismatch = 0;
+    // Done original routines. Compare d to d_opt if opted
+    if (opted) {
+        if (d_opt->index != d->index)
+            opt_mismatch = 1;
+        if (d_opt->state != d->state)
+            opt_mismatch = 1;
+        if (d_opt->nest != d->nest)
+            opt_mismatch = 1;
+        if (d_opt->numval != d->numval)
+            opt_mismatch = 1;
+        if (d_opt->token_index != d->token_index)
+            opt_mismatch = 1;
+        if (d_opt->element_index != d->element_index)
+            opt_mismatch = 1;
+    }
+    // If opt_mismatch, print out input and two outputs
+    if (opt_mismatch) {
+        // Hopefully we never reach here...
+        int jj = 0;
+        printf("ERROR FOUND IN OPTI_TT:\n");
+        printf("INPUT_____,");
+        printf("%p,%zu,%d,%d,%zu,%zu,%zu,%zu,%p,",
+                d_origin, d_origin->index, d_origin->state, d_origin->nest, d_origin->numval, d_origin->token_index, d_origin->element_index, n_origin, p_origin);
+        for (jj = 0; jj < n_origin; jj++)
+            printf("%02x", p_origin[jj]);
+        printf("\n");
+        printf("OUTPUT_OPT,");
+        printf("%p,%zu,%d,%d,%zu,%zu,%zu,%zu,\n",
+                d_opt, d_opt->index, d_opt->state, d_opt->nest, d_opt->numval, d_opt->token_index, d_opt->element_index, i_opt);
+        printf("OUTPUT_REF,");
+        printf("%p,%zu,%d,%d,%zu,%zu,%zu,%zu,\n",
+                d, d->index, d->state, d->nest, d->numval, d->token_index, d->element_index, i);
+    }
+#endif /* VERIFY_TT */
+#endif /* OPTI_TT */
 
     // TANG
     //printf("%p,%zu,%d,%d,%zu,%zu,%zu,%zu,\n",
