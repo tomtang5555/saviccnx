@@ -31,7 +31,7 @@
 /**
  * This macro defines whether or not use optimization code written by TT.
  */
-//#define OPTI_TT
+#define OPTI_TT
 
 /**
  * This macro defines whether or not use check optimization code's result
@@ -288,7 +288,140 @@ ccn_skeleton_decode(struct ccn_skeleton_decoder *d,
                 return (1);
 #endif
                 break;
+            case 0x02: //2, 5691
+                switch (p[1]) {
+                case 0x85: //2, 4173
+                    d->token_index = d->index;
+                    //d->element_index = d->index;
+                    d->index += 2;
+                    d->state = 360454;
+                    //d->nest += ;
+                    d->numval = 32;
+#ifdef VERIFY_TT
+                    i_opt = 2;
+                    opted = 1;
+#else
+                    return (2);
+#endif
+                    break;
+                case 0xaa: //2, 1507
+                    d->token_index = d->index;
+                    d->element_index = d->index;
+                    d->index += 2;
+                    //d->state = 164097;
+                    d->nest += 1;
+                    d->numval = 37;
+#ifdef VERIFY_TT
+                    i_opt = 2;
+                    opted = 1;
+#else
+                    return (2);
+#endif
+                    break;
+                default:
+                    break;
+                }
+                break;
+            case 0x03: //2, 3014
+                switch (p[1]) {
+                case 0xb2: //2, 1507
+                    d->token_index = d->index;
+                    d->element_index = d->index;
+                    d->index += 2;
+                    //d->state = 164097;
+                    d->nest += 1;
+                    d->numval = 54;
+#ifdef VERIFY_TT
+                    i_opt = 2;
+                    opted = 1;
+#else
+                    return (2);
+#endif
+                    break;
+                case 0xe2: //2, 1507
+                    d->token_index = d->index;
+                    d->element_index = d->index;
+                    d->index += 2;
+                    //d->state = 164097;
+                    d->nest += 1;
+                    d->numval = 60;
+#ifdef VERIFY_TT
+                    i_opt = 2;
+                    opted = 1;
+#else
+                    return (2);
+#endif
+                    break;
+                default:
+                    break;
+                }
+                break;
+            case 0x01: //2, 1515
+                if (p[1] == 0xda){
+                    d->token_index = d->index;
+                    d->element_index = d->index;
+                    d->index += 2;
+                    //d->state = 164097;
+                    d->nest += 1;
+                    d->numval = 27;
+#ifdef VERIFY_TT
+                    i_opt = 2;
+                    opted = 1;
+#else
+                    return (2);
+#endif
+                }
+                break;
+            case 0x08: //2, 1508
+                if (p[1] == 0x85){
+                    d->token_index = d->index;
+                    //d->element_index = d->index;
+                    d->index += 2;
+                    d->state = 360454;
+                    //d->nest += 0;
+                    d->numval = 128;
+#ifdef VERIFY_TT
+                    i_opt = 2;
+                    opted = 1;
+#else
+                    return (2);
+#endif
+                }
+                break;
+            case 0x0a: //2, 1508
+                if (p[1] == 0x95){
+                    d->token_index = d->index;
+                    //d->element_index = d->index;
+                    d->index += 2;
+                    d->state = 360454;
+                    //d->nest += 0;
+                    d->numval = 162;
+#ifdef VERIFY_TT
+                    i_opt = 2;
+                    opted = 1;
+#else
+                    return (2);
+#endif
+                }
+                break;
+            case 0x40: //2, 1498
+                if (p[1] == 0x95){
+                    d->token_index = d->index;
+                    //d->element_index = d->index;
+                    d->index += 2;
+                    d->state = 360454;
+                    //d->nest += 0;
+                    d->numval = 1024;
+#ifdef VERIFY_TT
+                    i_opt = 2;
+                    opted = 1;
+#else
+                    return (2);
+#endif
+                }
+                break;
             //case 0xa5: //1, 899
+                // not worth doing it
             //    break;
             default:
                 break;
@@ -301,12 +434,162 @@ ccn_skeleton_decode(struct ccn_skeleton_decoder *d,
         //    break;
 
         case 491521: //107,110
+            switch (p[0]) {
+            case 0xfa: //1, 82951
+                d->token_index = d->index;
+                d->element_index = d->index;
+                d->index += 1;
+                d->state = 164097;
+                d->nest += 1;
+                d->numval = 15;
+#ifdef VERIFY_TT
+                i_opt = 1;
+                opted = 1;
+#else
+                return (1);
+#endif
+                break;
+            case 0x00: //1, 14254
+                d->token_index = d->index;
+                //d->element_index = d->index;
+                d->index += 1;
+                if (n == 1)
+                    d->state = 491520;
+                d->nest -= 1;
+                //d->numval = ;
+#ifdef VERIFY_TT
+                i_opt = 1;
+                opted = 1;
+#else
+                return (1);
+#endif
+                break;
+            case 0xf2: //1, 1508
+                d->token_index = d->index;
+                d->element_index = d->index;
+                d->index += 1;
+                d->state = 164097;
+                d->nest += 1;
+                d->numval = 14;
+#ifdef VERIFY_TT
+                i_opt = 1;
+                opted = 1;
+#else
+                return (1);
+#endif
+                break;
+            case 0x01: //2, 4521
+                switch (p[1]) {
+                case 0x9a: //2, 1507
+                    d->token_index = d->index;
+                    d->element_index = d->index;
+                    d->index += 2;
+                    d->state = 164097;
+                    d->nest += 1;
+                    d->numval = 19;
+#ifdef VERIFY_TT
+                    i_opt = 2;
+                    opted = 1;
+#else
+                    return (2);
+#endif
+                    break;
+                case 0xa2: //2, 1507
+                    d->token_index = d->index;
+                    d->element_index = d->index;
+                    d->index += 2;
+                    d->state = 164097;
+                    d->nest += 1;
+                    d->numval = 20;
+#ifdef VERIFY_TT
+                    i_opt = 2;
+                    opted = 1;
+#else
+                    return (2);
+#endif
+                    break;
+                case 0xe2: //2, 1507
+                    d->token_index = d->index;
+                    d->element_index = d->index;
+                    d->index += 2;
+                    d->state = 164097;
+                    d->nest += 1;
+                    d->numval = 28;
+#ifdef VERIFY_TT
+                    i_opt = 2;
+                    opted = 1;
+#else
+                    return (2);
+#endif
+                    break;
+                default:
+                    break;
+                }
+                break;
+            case 0x05: //2, 2351
+                if (p[1] == 0xa2){
+                    d->token_index = d->index;
+                    d->element_index = d->index;
+                    d->index += 2;
+                    d->state = 164097;
+                    d->nest += 1;
+                    d->numval = 84;
+#ifdef VERIFY_TT
+                    i_opt = 2;
+                    opted = 1;
+#else
+                    return (2);
+#endif
+                }
+                break;
+            case 0x02: //2, 1513
+                if (p[1] == 0xba){
+                    d->token_index = d->index;
+                    d->element_index = d->index;
+                    d->index += 2;
+                    d->state = 164097;
+                    d->nest += 1;
+                    d->numval = 39;
+#ifdef VERIFY_TT
+                    i_opt = 2;
+                    opted = 1;
+#else
+                    return (2);
+#endif
+                }
+                break;
+            default:
+                break;
+            }
             break;
 
         case 491520: //3,921
+            //if (n == 0) {
+                d->state = 32768;
+#ifdef VERIFY_TT
+                i_opt = 0;
+                opted = 1;
+#else
+                return (0);
+#endif
+            //}
             break;
 
         case 425987: //2,363
+            if (p[0] == 0x31 && p[1] == 0x00){
+                d->token_index = d->index + 1;
+                //d->element_index = d->index;
+                d->index += 2;
+                d->state = 491521;
+                d->nest -= 1;
+                d->numval = 0;
+#ifdef VERIFY_TT
+                i_opt = 2;
+                opted = 1;
+#else
+                return (2);
+#endif
+            }
             break;
 
         default:
