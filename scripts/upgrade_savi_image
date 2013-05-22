@@ -1,0 +1,76 @@
+#!/bin/sh
+
+# To upgrade SAVI images:
+# 0. cd to image folder and set variables
+#cd ~/Desktop/images_savi/32/
+#IMG=
+#CACHE_DIR=`pwd`
+
+# 1. Resize the image
+#sudo e2fsck -f -p $IMG
+#sudo resize2fs -p $IMG ${FINAL_IMAGE_SIZE}M
+# To fix broken package:
+#sudo chroot "${MNT_DIR}" apt-get -y update
+#sudo chroot "${MNT_DIR}" apt-get -y autoclean
+#sudo chroot "${MNT_DIR}" apt-get -y clean
+#sudo chroot "${MNT_DIR}" apt-get -y autoremove
+#sudo dpkg --remove -force --force-remove-reinstreq package name
+
+# 2. Get a temporary folder
+MNT_DIR=`mktemp -d`
+
+# 3. Mount image to MNT_DIR
+sudo mount -o loop "$IMG" "${MNT_DIR}"
+
+# 4. Copy current machine's resolv.conf to image
+sudo mv "${MNT_DIR}/etc/resolv.conf" "${MNT_DIR}/etc/resolv.conf_orig"
+sudo cp /etc/resolv.conf "${MNT_DIR}/etc/resolv.conf"
+
+# 5. Use chroot to do perform upgrades
+#sudo chroot "${MNT_DIR}"
+
+# 5.1. Mount proc
+sudo chroot "${MNT_DIR}" mount -t proc proc /proc
+
+# 5.2. apt-get update
+sudo chroot "${MNT_DIR}" apt-get -y update
+sudo chroot "${MNT_DIR}" apt-get -y upgrade
+
+# 5.3. Install new kernel (optional)
+sudo chroot "${MNT_DIR}" apt-get -y install linux-image-`uname -r`
+sudo chroot "${MNT_DIR}" apt-get -y dist-upgrade
+# 5.3.1 List installed kernels
+#sudo chroot "${MNT_DIR}" dpkg --list | grep linux-image
+# 5.3.2 Remove non-`uname -r` kernels
+#sudo chroot "${MNT_DIR}" uname -r
+#sudo chroot "${MNT_DIR}" apt-get -y purge linux-image-...(-virtual)
+# 5.3.3 Autoremove other remaining kernel packages
+#sudo chroot "${MNT_DIR}" apt-get -y autoremove --purge
+# 5.3.4 Verify that /root has the correct initrd, config, vmlinuz, etc.
+#sudo chroot "${MNT_DIR}" ls /boot
+
+# 5.4. Upgrade anything else required
+# sudo cp <source> "${MNT_DIR}/home/ubuntu/<destination>"
+
+# 6. Change home folder owner
+sudo chroot ${MNT_DIR} chown -R ubuntu:ubuntu /home/ubuntu/
+
+# 7. Clean up
+# 7.1. Unmount /proc in the image
+sudo chroot ${MNT_DIR} umount /proc
+# 7.2. Revert resolv.conf in the image
+sudo mv "${MNT_DIR}/etc/resolv.conf_orig" "${MNT_DIR}/etc/resolv.conf"
+
+# 8. Get the new kernel and ramdisk files
+# 8.1. kernel file
+rm ./kernel
+sudo cp "${MNT_DIR}/boot/vmlinuz-`uname -r`" "./kernel"
+sudo chmod a+r "./kernel"
+sudo chown $USER:$USER "./kernel"
+# 8.2. ramdisk file
+rm ./initrd
+cp "${MNT_DIR}/boot/initrd.img-`uname -r`" "./initrd"
+
+# 9. Unmount image
+sudo umount "${MNT_DIR}"
+

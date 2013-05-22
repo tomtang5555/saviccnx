@@ -31,7 +31,7 @@
 /**
  * This macro defines whether or not use optimization code written by TT.
  */
-#define OPTI_TT
+//#define OPTI_TT
 
 /**
  * This macro defines whether or not use check optimization code's result

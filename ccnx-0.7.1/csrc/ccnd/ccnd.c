@@ -4213,9 +4213,6 @@ static void
 process_incoming_interest(struct ccnd_handle *h, struct face *face,
                           unsigned char *msg, size_t size)
 {
-    // TANG
-    //struct timeval tv_start, tv_end;
-
     struct hashtb_enumerator ee;
     struct hashtb_enumerator *e = &ee;
     struct ccn_parsed_interest parsed_interest = {0};
@@ -4705,7 +4702,10 @@ process_input_message(struct ccnd_handle *h, struct face *face,
 
             // TANG
             //gettimeofday(&tv_end, NULL);
-            //printf("INT\t%f\n", (double)(tv_end.tv_usec - tv_start.tv_usec));
+            //printf("INT %ld\n",
+            //        (tv_end.tv_usec > tv_start.tv_usec) ?
+            //        (tv_end.tv_usec - tv_start.tv_usec) :
+            //        (1000000 - tv_start.tv_usec + tv_end.tv_usec));
 
             return;
         case CCN_DTAG_ContentObject:
@@ -4716,7 +4716,10 @@ process_input_message(struct ccnd_handle *h, struct face *face,
 
             // TANG
             //gettimeofday(&tv_end, NULL);
-            //printf("INT\t%f\n", (double)(tv_end.tv_usec - tv_start.tv_usec));
+            //printf("CON %ld\n",
+            //        (tv_end.tv_usec > tv_start.tv_usec) ?
+            //        (tv_end.tv_usec - tv_start.tv_usec) :
+            //        (1000000 - tv_start.tv_usec + tv_end.tv_usec));
 
             return;
         case CCN_DTAG_SequenceNumber:
