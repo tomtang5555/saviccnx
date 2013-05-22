@@ -99,6 +99,7 @@
 /csrc/exttests/testrepo2/
 /csrc/exttests/testrepoA/
 /csrc/exttests/*.html
+/csrc/lib/test.keystore
 /csrc/tests/FAILING
 /csrc/tests/SKIPPED
 /csrc/tests/STATUS/
