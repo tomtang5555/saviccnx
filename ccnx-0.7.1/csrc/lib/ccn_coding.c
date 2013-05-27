@@ -19,7 +19,7 @@
  */
 #include <ccn/coding.h>
 //TANG
-#include <stdio.h>
+//#include <stdio.h>
 
 /**
  * This macro documents what's happening in the state machine by

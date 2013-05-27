@@ -1,7 +1,18 @@
 #!/bin/bash
 
-IF=eth0
-WAIT_TIME=10
+WAIT_TIME=${1:-10}
+echo "WAIT_TIME: $WAIT_TIME"
+PROC_NAME=${2:-"ccnd"}
+echo "PROC_NAME: $PROC_NAME"
+IF=${3:-"eth0"}
+echo "IF: $IF"
+
+PROC_RUNNING=0
+LINE=`top -b -n 1 | grep " $PROC_NAME "`
+if [[ ${#LINE} -ne 0 ]]; then
+	PROC_RUNNING=1
+fi
+echo "PROC_RUNNING: $PROC_RUNNING"
 
 begin_time=`date +%s`
 begin_tx_byte=`cat /sys/class/net/$IF/statistics/tx_bytes`
@@ -9,7 +20,18 @@ begin_rx_byte=`cat /sys/class/net/$IF/statistics/rx_bytes`
 begin_tx_packets=`cat /sys/class/net/$IF/statistics/tx_packets`
 begin_rx_packets=`cat /sys/class/net/$IF/statistics/rx_packets`
 
-sleep $WAIT_TIME
+TIME_PASSED=0
+CPU_TOTAL=0
+while [[ "$TIME_PASSED" -lt "$WAIT_TIME" ]]; do
+	(( TIME_PASSED += 1 ))
+	#echo $TIME_PASSED
+	if [[ "$PROC_RUNNING" -eq 1 ]]; then
+		LINE=`top -d 0 -b -n 1 | grep " $PROC_NAME " | awk '{print $9}'`
+		(( CPU_TOTAL += $LINE ))
+		#echo $CPU_TOTAL
+	fi 
+	sleep 1
+done
 
 end_time=`date +%s`
 end_tx_byte=`cat /sys/class/net/$IF/statistics/tx_bytes`
@@ -18,13 +40,18 @@ end_tx_packets=`cat /sys/class/net/$IF/statistics/tx_packets`
 end_rx_packets=`cat /sys/class/net/$IF/statistics/rx_packets`
 
 time_int=$(($end_time-$begin_time))
-tx_byte=$((($end_tx_byte-$begin_tx_byte)/$time_int))
-rx_byte=$((($end_rx_byte-$begin_rx_byte)/$time_int))
-tx_packets=$((($end_tx_packets-$begin_tx_packets)/$time_int))
-rx_packets=$((($end_rx_packets-$begin_rx_packets)/$time_int))
-echo "${time_int}s ${IF}"
-echo ${tx_byte} Bps tx
-echo ${rx_byte} Bps rx
-echo ${tx_packets} pps tx
-echo ${rx_packets} pps rx
+echo "time_int: $time_int"
+
+tx_bps=$((($end_tx_byte-$begin_tx_byte)/$time_int))
+rx_bps=$((($end_rx_byte-$begin_rx_byte)/$time_int))
+tx_pps=$((($end_tx_packets-$begin_tx_packets)/$time_int))
+rx_pps=$((($end_rx_packets-$begin_rx_packets)/$time_int))
+cpu_avg=$(( $CPU_TOTAL / $TIME_PASSED ))
+
+echo "${time_int} s, ${PROC_NAME}, ${IF},"
+echo ${tx_bps} Bps tx
+echo ${rx_bps} Bps rx
+echo ${tx_pps} pps tx
+echo ${rx_pps} pps rx
+echo ${cpu_avg} % CPU usage
 
