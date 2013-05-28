@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Need: SERVERS, CLIENTS, USER, CCNX_DIR
+
+echo "Run ccndstop in router(local).."
+cd ${CCNX_DIR}/bin
+./ccndstop
+
+echo "Run ccndstop in all servers.."
+for ip in $SERVERS
+do
+	ssh ${USER}@${ip} "
+		cd ${CCNX_DIR}/bin
+		./ccndstop
+	"
+done 
+
+echo "Run ccndstop in all clients.."
+for ip in $CLIENTS
+do
+	ssh ${USER}@${ip} "
+		cd ${CCNX_DIR}/bin
+		./ccndstop
+	"
+done
+
