@@ -5,12 +5,18 @@
 #       UNIQUE, CCNDC_PROTO, CCNDC_FLAG, CCNDC_PORT
 #       CCND_OUTPUT
 
+# Note: redirecting stdout and stderr to /dev/null
+#       is necessary esp. on clients/servers to avoid
+#       sending unnecessary information through ssh
+#       to local terminal, which degrades performance
+#       severely
+
 source stopall
 #source initall
 
 echo "Run ccndstart on router(local).."
 cd ${CCNX_DIR}/bin
-./ccndstart
+./ccndstart &> /dev/null
 
 echo "Setting up all servers.."
 COUNT=0
@@ -32,8 +38,8 @@ do
 	#   start ccnd service
 	ssh ${USER}@${ip} -f "
 		cd ${CCNX_DIR}/bin
-		./ccndstart
-		./ccndelphi ${PREFIX} &
+		./ccndstart &> /dev/null
+		./ccndelphi ${PREFIX} &> /dev/null
 	"
 
 	# ccndc from router to servers
@@ -67,9 +73,9 @@ do
 		cd ${NAMELIST_DIR}
 		./create_namelist.sh ${NAMELIST} ${PREFIX}
 		cd ${CCNX_DIR}/bin
-		./ccndstart
+		./ccndstart &> /dev/null
 		./ccndc ${CCNDC_FLAG} add ${PREFIX} ${CCNDC_PROTO} ${ROUTER} ${CCNDC_PORT}
-		./ccntraffic -f ${NAMELIST_DIR}/${NAMELIST} &
+		./ccntraffic -f ${NAMELIST_DIR}/${NAMELIST} &> /dev/null
 
 	"
 
