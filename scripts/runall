@@ -71,11 +71,11 @@ do
 	#   ccndc to router
 	ssh ${USER}@${ip} -f "
 		cd ${NAMELIST_DIR}
-		./create_namelist.sh ${NAMELIST} ${PREFIX}
+		./create_namelist.sh ${NAMELIST} ${PREFIX} ${NAMELIST_NUM}
 		cd ${CCNX_DIR}/bin
 		./ccndstart &> /dev/null
 		./ccndc ${CCNDC_FLAG} add ${PREFIX} ${CCNDC_PROTO} ${ROUTER} ${CCNDC_PORT}
-		./ccntraffic -f ${NAMELIST_DIR}/${NAMELIST} &> /dev/null
+		./ccntraffic -f ${NAMELIST_DIR}/${NAMELIST} -n ${NAMELIST_NUM} &> /dev/null
 
 	"
 

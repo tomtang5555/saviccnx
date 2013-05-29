@@ -13,6 +13,7 @@ CCNX_DIR="${HOME_DIR}/ccnx-0.7.1"
 NAMELIST_DIR="${HOME_DIR}/onl_ccnx_utils"
 NAMELIST="namelist"
 NAMELIST_PREFIX="ccnx:/gen"
+NAMELIST_NUM="100"
 UNIQUE=1
 CCNDC_PROTO="tcp"
 CCNDC_FLAG=""
