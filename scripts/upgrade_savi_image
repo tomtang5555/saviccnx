@@ -6,7 +6,10 @@
 #IMG=
 #CACHE_DIR=`pwd`
 
-# 1. Resize the image
+# 1. Get a temporary folder
+MNT_DIR=`mktemp -d`
+
+# 2. Resize the image
 #sudo e2fsck -f -p $IMG
 #sudo resize2fs -p $IMG ${FINAL_IMAGE_SIZE}M
 # To fix broken package:
@@ -15,9 +18,6 @@
 #sudo chroot "${MNT_DIR}" apt-get -y clean
 #sudo chroot "${MNT_DIR}" apt-get -y autoremove
 #sudo dpkg --remove -force --force-remove-reinstreq package name
-
-# 2. Get a temporary folder
-MNT_DIR=`mktemp -d`
 
 # 3. Mount image to MNT_DIR
 sudo mount -o loop "$IMG" "${MNT_DIR}"
