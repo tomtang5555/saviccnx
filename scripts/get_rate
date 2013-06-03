@@ -51,6 +51,20 @@ rx_bps=$((($end_rx_byte-$begin_rx_byte)/$time_int))
 tx_pps=$((($end_tx_packets-$begin_tx_packets)/$time_int))
 rx_pps=$((($end_rx_packets-$begin_rx_packets)/$time_int))
 
+# Correct 32-bit int overflow problem:
+if [[ $tx_bps -lt 0 ]]; then
+	(( tx_bps += (4294967295 / $time_int) ));
+fi
+if [[ $rx_bps -lt 0 ]]; then
+	(( rx_bps += (4294967295 / $time_int) ));
+fi
+if [[ $tx_pps -lt 0 ]]; then
+	(( tx_pps += (4294967295 / $time_int) ));
+fi
+if [[ $rx_pps -lt 0 ]]; then
+	(( rx_pps += (4294967295 / $time_int) ));
+fi
+
 echo "${time_int} s, ${PROC_NAME}, ${IF},"
 echo ${tx_bps} Bps tx
 echo ${rx_bps} Bps rx

@@ -320,7 +320,8 @@ incoming_content(
     size_t ccnb_size = 0;
     const unsigned char *data = NULL;
     size_t data_size = 0;
-    size_t written;
+    // TANG: no need to write data to stdout
+    //size_t written;
     const unsigned char *ib = NULL; /* info->interest_ccnb */
     struct ccn_indexbuf *ic = NULL;
     int res;
@@ -357,14 +358,16 @@ incoming_content(
     }
     
     /* OK, we will accept this block. */
-	//sleep(1);
-    written = fwrite(data, data_size, 1, stdout);
-    if (written != 1)
-        exit(1);
+    //sleep(1);
+    // TANG: No need to write data to stdout, skip 3 lines
+    //written = fwrite(data, data_size, 1, stdout);
+    //if (written != 1)
+    //    exit(1);
     
     /* A short block signals EOF for us. */
-    if (data_size < CHUNK_SIZE)
-        exit(0);
+    // TANG: to support data_size smaller than 1024, skip 2 lines
+    //if (data_size < CHUNK_SIZE)
+    //    exit(0);
     
     /* Ask for the next one */
     name = ccn_charbuf_create();
@@ -418,17 +421,18 @@ incoming_content(
 
 int main(int argc, char** argv){
 	struct ccn * ccn = NULL;
-	struct ccn_charbuf * name = NULL;
+	//struct ccn_charbuf * name = NULL;
 	struct ccn_closure * incoming = NULL;
-	const char * arg = NULL;
+	//const char * arg = NULL;
 	int res;
 	int micros;
 	char ch;
 	struct mydata * mydata = NULL;
 	int allow_stale = 0;
 	int use_decimal = 1;
-	
-	int lineMarker = -1;
+
+	// TANG: comment out unused variables
+	//int lineMarker = -1;
 	int start = 0;
 	int flying = -1;
 	
@@ -494,7 +498,7 @@ int main(int argc, char** argv){
 
 			if(DEBUG){
 				printf("URL %d = %s \n", idx, line);
-				printf("URL length = %d \n", strlen(line));
+				printf("URL length = %zu \n", strlen(line));
 			}
 				
 			idx++;
