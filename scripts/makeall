@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# Need: SERVERS, CLIENTS, ROUTER, USER, CCNX_DIR,
+#       NAMELIST_DIR, NAMELIST, NAMELIST_PREFIX
+#       UNIQUE, CCNDC_PROTO, CCNDC_FLAG, CCNDC_PORT
+
+source stopall
+
+echo "Run make on router(local).."
+for ip in $ROUTER
+do
+	echo "  working on: ${ip}"
+	# for each router..
+	#   build code
+	ssh ${USER}@${ip} ${SSH_OPT} "
+		cd ${CCNX_DIR}
+		make
+	"
+done
+
+echo "Preparing all servers.."
+for ip in $SERVERS
+do
+	echo "  working on: ${ip}"
+	# for each server..
+	#   build code
+	ssh ${USER}@${ip} ${SSH_OPT} "
+		cd ${CCNX_DIR}
+		make
+	"
+	echo "  done on : ${ip}"
+done 
+
+echo "Preparing all clients.."
+for ip in $CLIENTS
+do
+	echo "  working on: ${ip}"
+	# for each client..
+	#   build code
+	ssh ${USER}@${ip} ${SSH_OPT} "
+		cd ${CCNX_DIR}
+		make
+	"
+	echo "  done on : ${ip}"
+done
+
+echo "All done."

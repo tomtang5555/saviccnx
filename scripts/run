@@ -6,10 +6,16 @@ SERVERS="
 CLIENTS="
 10.2.2.18
 "
-ROUTER="10.2.2.3"
+ROUTER="
+10.2.2.3
+"
+
+ROUTER_NUM=1
 USER="ubuntu"
 HOME_DIR="/home/${USER}"
 CCNX_DIR="${HOME_DIR}/ccnx-0.7.1"
+SSH_OPT="-i ${HOME_DIR}/.ssh/savi_ccn_key"
+
 NAMELIST_DIR="${HOME_DIR}/onl_ccnx_utils"
 NAMELIST="namelist"
 NAMELIST_PREFIX="ccnx:/gen"

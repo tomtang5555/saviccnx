@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# Need: SERVERS, CLIENTS, ROUTER, USER, CCNX_DIR,
+#       NAMELIST_DIR, NAMELIST, NAMELIST_PREFIX
+#       UNIQUE, CCNDC_PROTO, CCNDC_FLAG, CCNDC_PORT
+
+source stopall
+
+echo "Run ccndstart on routers.."
+for ip in $ROUTER
+do
+	echo "  working on: ${ip}"
+	# for each router..
+	#   run ccndstart
+	ssh ${USER}@${ip} ${SSH_OPT} -f "
+		cd ${CCNX_DIR}/bin
+		./ccndstart &> /dev/null
+	"
+done
+
+echo "Run ccndstart on all servers.."
+for ip in $SERVERS
+do
+	echo "  working on: ${ip}"
+	# for each server..
+	#   run ccndstart
+	ssh ${USER}@${ip} ${SSH_OPT} -f "
+		cd ${CCNX_DIR}/bin
+		./ccndstart &> /dev/null
+	"
+	echo "  done on : ${ip}"
+done 
+
+echo "Run ccndstart on all clients.."
+for ip in $CLIENTS
+do
+	echo "  working on: ${ip}"
+	# for each client..
+	#   run ccndstart
+	ssh ${USER}@${ip} ${SSH_OPT} -f "
+		cd ${CCNX_DIR}/bin
+		./ccndstart &> /dev/null
+	"
+	echo "  done on : ${ip}"
+done
+
+
+
+echo "All done."

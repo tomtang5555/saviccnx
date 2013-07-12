@@ -6,9 +6,17 @@
 
 source stopall
 
-echo "Run ccndstart on router(local).."
-cd ${CCNX_DIR}
-make
+echo "Run make on router(local).."
+for ip in $ROUTER
+do
+	echo "  working on: ${ip}"
+	# for each router..
+	#   build code
+	ssh ${USER}@${ip} "
+		cd ${CCNX_DIR}
+		make
+	"
+done
 
 echo "Preparing all servers.."
 for ip in $SERVERS
